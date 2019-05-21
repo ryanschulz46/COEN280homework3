@@ -29,7 +29,7 @@ public class DBConnectionManager {
            String host = "localhost"; 
            String port = "1521"; 
            String dbName = "orcl"; 
-           String userName = "Scott"; 
+           String userName = "scott"; 
            String password = "tiger"; 
     
            // Construct the JDBC URL 

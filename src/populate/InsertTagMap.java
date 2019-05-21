@@ -20,9 +20,10 @@ public class InsertTagMap {
 		 try {
 			 sc = new Scanner(file);
 	   // Check if there is another line of input
-			 int i = 0;
+			 String str = sc.nextLine();
+			 int i=0;
 			 while(i < 5){
-				 String str = sc.nextLine();
+				 str = sc.nextLine();
 				 parseLine(str, stmt);
 				 i++;
 			 }
@@ -38,14 +39,16 @@ public class InsertTagMap {
 	}
  
 	private static void parseLine(String str, Statement stmt ) throws SQLException{
-		String id, value;
+		String id, value, buf;
 		Scanner sc = new Scanner(str);
 		sc.useDelimiter("\t");
 		// Check if there is another line of input
 		while(sc.hasNext()){
 			id = sc.next();
 			value = sc.next();
-			stmt.executeUpdate("insert into TAG_MAP values ("+id+",'"+value+"')");
+			buf = "insert into TAG_MAP values ("+id+",'"+value+"')";
+			System.out.println(buf);
+			stmt.executeUpdate(buf);
 		}
 		sc.close();
 	}
