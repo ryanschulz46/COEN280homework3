@@ -3,12 +3,12 @@ package populate;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.*;
 
 
 public class DBConnectionManager {
-
-	/*public void closeConnection(Connection connection) {
+	
+	
+	public static void closeConnection(Connection connection) {
 		try {
 			connection.close();
 		} catch (SQLException err) {
@@ -16,7 +16,7 @@ public class DBConnectionManager {
 		}
 	}
 	
-	private Connection openConnection() throws SQLException, ClassNotFoundException { 
+	public static Connection openConnection() throws SQLException, ClassNotFoundException { 
 		// Load the Oracle database driver 
            DriverManager.registerDriver(new oracle.jdbc.OracleDriver()); 
     
@@ -25,16 +25,16 @@ public class DBConnectionManager {
            server. These values are now hard-coded in the program. In 
            general, they should be stored in some configuration file and 
            read at run time. 
-           //*//* 
+           //*/
            String host = "localhost"; 
            String port = "1521"; 
-           String dbName = "coen280"; 
-           String userName = "temp"; 
-           String password = "temp585"; 
+           String dbName = "orcl"; 
+           String userName = "Scott"; 
+           String password = "tiger"; 
     
            // Construct the JDBC URL 
-           String dbURL = "jdbc:oracle:thin:@" + host + ":" + port + ":" + dbName; 
+           String dbURL = "jdbc:oracle:thin:@" + host + ":" + port + "/" + dbName; 
            return DriverManager.getConnection(dbURL, userName, password); 
 	}
-	*/
+	
 }
