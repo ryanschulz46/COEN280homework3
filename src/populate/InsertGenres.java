@@ -43,13 +43,11 @@ public class InsertGenres {
 		Scanner sc = new Scanner(str);
 		sc.useDelimiter("\t");
 		// Check if there is another line of input
-		while(sc.hasNext()){
-			movieId = sc.next();
-			country = sc.next();
-			buf = "insert into GENRES values (" + movieId + ", '" + country + "')";
-			System.out.println(buf);
-			stmt.executeUpdate(buf);
-		}
+		movieId = sc.next();
+		country = sc.next();
+		buf = "insert into GENRES values (" + movieId + ", '" + country + "')";
+		System.out.println(buf);
+		stmt.executeUpdate(buf);
 		sc.close();
 	}
 	

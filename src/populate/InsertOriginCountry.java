@@ -15,14 +15,14 @@ public class InsertOriginCountry {
 		 System.out.println("Inserting Origin Country Data ..."); 
 		
 		//dat file
-		File file = new File("assets/datafiles/movie_countries.dat");
+		File file = new File("assets/datafiles/TEST.txt");
 		Scanner sc = null;
 		 try {
 			 sc = new Scanner(file);
 	   // Check if there is another line of input
 			 String str = sc.nextLine();
 			 int i=0;
-			 while(i < 5){
+			 while(i < 8){
 				 str = sc.nextLine();
 				 parseLine(str, stmt);
 				 i++;
@@ -43,13 +43,16 @@ public class InsertOriginCountry {
 		Scanner sc = new Scanner(str);
 		sc.useDelimiter("\t");
 		// Check if there is another line of input
-		while(sc.hasNext()){
-			movieId = sc.next();
+		movieId = sc.next();
+		try {
 			country = sc.next();
-			buf = "insert into ORIGIN_COUNTRY values (" + movieId + ", '" + country + "')";
-			System.out.println(buf);
-			stmt.executeUpdate(buf);
+			buf = "insert into FILM_COUNTRY values (" + movieId + ", '" + country + "')";
+		} catch(Exception e) {
+			buf = "insert into FILM_COUNTRY values (" + movieId + ", NULL)";
 		}
+		
+		System.out.println(buf);
+		//stmt.executeUpdate(buf);
 		sc.close();
 	}
 	

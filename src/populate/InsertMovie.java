@@ -42,7 +42,7 @@ public class InsertMovie {
 		Scanner sc = new Scanner(str);
 		sc.useDelimiter("\t");
 		// Check if there is another line of input
-		movieId = sc.next();
+		movieId = sc.next(); //some missing ID's?
 		title = sc.next();
 		sc.next(); //skip imdbID
 		sc.next(); //skip spanish title

@@ -43,13 +43,11 @@ public class InsertTagMap {
 		Scanner sc = new Scanner(str);
 		sc.useDelimiter("\t");
 		// Check if there is another line of input
-		while(sc.hasNext()){
-			id = sc.next();
-			value = sc.next();
-			buf = "insert into TAG_MAP values (" + id + ", '" + value + "')";
-			System.out.println(buf);
-			stmt.executeUpdate(buf);
-		}
+		id = sc.next();
+		value = sc.next();
+		buf = "insert into TAG_MAP values (" + id + ", '" + value + "')";
+		System.out.println(buf);
+		stmt.executeUpdate(buf);
 		sc.close();
 	}
 	

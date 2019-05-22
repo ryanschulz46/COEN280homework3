@@ -5,7 +5,9 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-
+/* All insert statements were crafted with insight for this guide:
+ * https://netjs.blogspot.com/2016/06/reading-delimited-file-in-java-using-scanner.html
+ */
 public class Populate {
 	 
 	public static void main(String[] args) {
@@ -14,7 +16,7 @@ public class Populate {
         try { 
             con = DBConnectionManager.openConnection();
             //InsertTagMap tagMap = new InsertTagMap(con); 
-            InsertMovieTags.ReadInsert(con);
+            InsertOriginCountry.ReadInsert(con);
         } 
         catch (SQLException e) { 
             System.err.println("Errors occurs when communicating with the database server: " + e.getMessage()); 

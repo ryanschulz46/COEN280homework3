@@ -43,13 +43,16 @@ public class InsertFilmCountry {
 		Scanner sc = new Scanner(str);
 		sc.useDelimiter("\t");
 		// Check if there is another line of input
-		while(sc.hasNext()){
-			movieId = sc.next();
+		movieId = sc.next();
+		try {
 			country = sc.next();
 			buf = "insert into FILM_COUNTRY values (" + movieId + ", '" + country + "')";
-			System.out.println(buf);
-			stmt.executeUpdate(buf);
+		} catch(Exception e) {
+			buf = "insert into FILM_COUNTRY values (" + movieId + ", NULL)";
 		}
+		
+		System.out.println(buf);
+		//stmt.executeUpdate(buf);
 		sc.close();
 	}
 	

@@ -43,14 +43,12 @@ public class InsertMovieTags {
 		Scanner sc = new Scanner(str);
 		sc.useDelimiter("\t");
 		// Check if there is another line of input
-		while(sc.hasNext()){
-			movieId = sc.next();
-			tagId = sc.next();
-			weight = sc.next();
-			buf = "insert into TAG_MOVIE_PAIR values (" + movieId + ", "+ tagId + ", " + weight + ")";
-			System.out.println(buf);
-			//stmt.executeUpdate(buf);
-		}
+		movieId = sc.next();
+		tagId = sc.next();
+		weight = sc.next();
+		buf = "insert into TAG_MOVIE_PAIR values (" + movieId + ", "+ tagId + ", " + weight + ")";
+		System.out.println(buf);
+		//stmt.executeUpdate(buf);
 		sc.close();
 	}
 	
