@@ -12,7 +12,7 @@ public class InsertMovieTags {
 	public static void ReadInsert(Connection con) throws SQLException { 
 		 
 		Statement stmt = con.createStatement(); 
-		 System.out.println("Inserting Movie Tag Data ..."); 
+		 System.out.println("Inserting Movie Tag Data"); 
 		
 		//dat file
 		File file = new File("assets/datafiles/movie_tags.dat");
@@ -21,11 +21,9 @@ public class InsertMovieTags {
 			 sc = new Scanner(file);
 	   // Check if there is another line of input
 			 String str = sc.nextLine();
-			 int i=0;
-			 while(i < 5){
+			 while(sc.hasNextLine()){
 				 str = sc.nextLine();
 				 parseLine(str, stmt);
-				 i++;
 			 }
 	   
 		 } catch (IOException  exp) {
@@ -35,7 +33,7 @@ public class InsertMovieTags {
 	  
 		 sc.close();
 		 stmt.close();
-		 System.out.println("Finished adding");
+		 System.out.println("Finished Movie Tag Data");
 	}
  
 	private static void parseLine(String str, Statement stmt ) throws SQLException{
@@ -47,8 +45,8 @@ public class InsertMovieTags {
 		tagId = sc.next();
 		weight = sc.next();
 		buf = "insert into TAG_MOVIE_PAIR values (" + movieId + ", "+ tagId + ", " + weight + ")";
-		System.out.println(buf);
-		//stmt.executeUpdate(buf);
+		//System.out.println(buf);
+		stmt.executeUpdate(buf);
 		sc.close();
 	}
 	

@@ -12,7 +12,7 @@ public class InsertTagMap {
 	public static void ReadInsert(Connection con) throws SQLException { 
 		 
 		Statement stmt = con.createStatement(); 
-		 System.out.println("Inserting Tag Map Data ..."); 
+		 System.out.println("Inserting Tag Map Data"); 
 		
 		//dat file
 		File file = new File("assets/datafiles/tags.dat");
@@ -21,11 +21,9 @@ public class InsertTagMap {
 			 sc = new Scanner(file);
 	   // Check if there is another line of input
 			 String str = sc.nextLine();
-			 int i=0;
-			 while(i < 5){
+			 while(sc.hasNextLine()){
 				 str = sc.nextLine();
 				 parseLine(str, stmt);
-				 i++;
 			 }
 	   
 		 } catch (IOException  exp) {
@@ -35,7 +33,7 @@ public class InsertTagMap {
 	  
 		 sc.close();
 		 stmt.close();
-		 System.out.println("Finished adding");
+		 System.out.println("Finished Tag Map Data");
 	}
  
 	private static void parseLine(String str, Statement stmt ) throws SQLException{
@@ -46,7 +44,7 @@ public class InsertTagMap {
 		id = sc.next();
 		value = sc.next();
 		buf = "insert into TAG_MAP values (" + id + ", '" + value + "')";
-		System.out.println(buf);
+		//System.out.println(buf);
 		stmt.executeUpdate(buf);
 		sc.close();
 	}

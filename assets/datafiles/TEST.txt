@@ -1,13 +1,15 @@
-4435	Yugoslavia
-5194	Yugoslavia
-5310	Yugoslavia
-5856	Yugoslavia
-63187	Yugoslavia
-985	
-1752	
-2855	
-3915	
-6520	
-8579	
-43708	
-53883	
+643	Peanuts - Die Bank zahlt alles	1996	\N	\N
+624	Condition Red	1995	\N	\N
+619	Ed	2000	\N	\N
+613	Jane Eyre	2006	\N	\N
+591	Tough and Deadly	1995	\N	\N
+588	Aladdin	1992	0.1	1
+554	Law & Order: Trial by Jury	2005	\N	\N
+546	Super Mario Bros.	1993	\N	\N
+453	For Love or Money	1993	\N	\N
+418	Being Human	2008	\N	\N
+412	The Age of Innocence	1993	\N	\N
+360	I Love Trouble	1994	\N	\N
+210	Wild Bill	1995	\N	\N
+143	Gospa	1995	\N	\N
+

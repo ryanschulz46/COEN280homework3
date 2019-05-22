@@ -1,8 +1,8 @@
 package populate;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
+//import java.sql.DriverManager;
+//import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /* All insert statements were crafted with insight for this guide:
@@ -15,8 +15,13 @@ public class Populate {
         Connection con = null; 
         try { 
             con = DBConnectionManager.openConnection();
-            //InsertTagMap tagMap = new InsertTagMap(con); 
+            InsertMovie.ReadInsert(con);
+            InsertGenres.ReadInsert(con);
+            InsertTagMap.ReadInsert(con);
+            InsertMovieTags.ReadInsert(con);
             InsertOriginCountry.ReadInsert(con);
+            InsertFilmCountry filmCountry = new InsertFilmCountry(con);
+            System.out.println("All files were successfully added to the database.");
         } 
         catch (SQLException e) { 
             System.err.println("Errors occurs when communicating with the database server: " + e.getMessage()); 

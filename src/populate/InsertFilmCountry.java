@@ -5,15 +5,24 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class InsertFilmCountry {
-
-	public static void ReadInsert(Connection con) throws SQLException { 
-		 
-		Statement stmt = con.createStatement(); 
-		 System.out.println("Inserting Film Country Data ..."); 
-		
+	
+	private HashMap<String,String> repeatCheck;
+	private Connection con;
+	private Statement stmt;
+	
+	public InsertFilmCountry(Connection con) throws SQLException {
+		this.con = con;
+		repeatCheck = new HashMap<String,String>();
+		ReadInsert();
+	}
+	
+	public void ReadInsert() throws SQLException { 
+		 System.out.println("Inserting Film Country Data"); 
+		 Statement stmt = con.createStatement(); 
 		//dat file
 		File file = new File("assets/datafiles/movie_locations.dat");
 		Scanner sc = null;
@@ -21,11 +30,9 @@ public class InsertFilmCountry {
 			 sc = new Scanner(file);
 	   // Check if there is another line of input
 			 String str = sc.nextLine();
-			 int i=0;
-			 while(i < 5){
+			 while(sc.hasNextLine()){
 				 str = sc.nextLine();
 				 parseLine(str, stmt);
-				 i++;
 			 }
 	   
 		 } catch (IOException  exp) {
@@ -35,24 +42,44 @@ public class InsertFilmCountry {
 	  
 		 sc.close();
 		 stmt.close();
-		 System.out.println("Finished adding");
+		 System.out.println("Finished Film Country Data");
 	}
  
-	private static void parseLine(String str, Statement stmt ) throws SQLException{
+	private void parseLine(String str, Statement stmt ) throws SQLException{
 		String movieId, country, buf;
 		Scanner sc = new Scanner(str);
 		sc.useDelimiter("\t");
 		// Check if there is another line of input
 		movieId = sc.next();
-		try {
-			country = sc.next();
-			buf = "insert into FILM_COUNTRY values (" + movieId + ", '" + country + "')";
-		} catch(Exception e) {
-			buf = "insert into FILM_COUNTRY values (" + movieId + ", NULL)";
+		
+		if(!repeatCheck.containsKey(movieId)) {
+			repeatCheck.clear(); //clear hashmap as its a new movie
 		}
 		
-		System.out.println(buf);
-		//stmt.executeUpdate(buf);
+		try {
+			country = sc.next();
+			if(country.equals("")) {
+				sc.close();
+				return;
+			}
+			buf = "insert into FILM_COUNTRY values (" + movieId + ", '" + country + "')";
+		} catch(Exception e) {
+			sc.close();
+			return;
+		}
+		
+		if(repeatCheck.containsValue(country)) {
+			sc.close();
+			return;
+		}
+		else {
+			repeatCheck.put(movieId, country);
+		}
+		
+		
+		
+		//System.out.println(buf);
+		stmt.executeUpdate(buf);
 		sc.close();
 	}
 	

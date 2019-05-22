@@ -12,7 +12,7 @@ public class InsertGenres {
 	public static void ReadInsert(Connection con) throws SQLException { 
 		 
 		Statement stmt = con.createStatement(); 
-		 System.out.println("Inserting Genres Data ..."); 
+		 System.out.println("Inserting Genres Data"); 
 		
 		//dat file
 		File file = new File("assets/datafiles/movie_genres.dat");
@@ -21,11 +21,9 @@ public class InsertGenres {
 			 sc = new Scanner(file);
 	   // Check if there is another line of input
 			 String str = sc.nextLine();
-			 int i=0;
-			 while(i < 5){
+			 while(sc.hasNextLine()){
 				 str = sc.nextLine();
 				 parseLine(str, stmt);
-				 i++;
 			 }
 	   
 		 } catch (IOException  exp) {
@@ -35,18 +33,20 @@ public class InsertGenres {
 	  
 		 sc.close();
 		 stmt.close();
-		 System.out.println("Finished adding");
+		 System.out.println("Finished Genres Data");
 	}
  
 	private static void parseLine(String str, Statement stmt ) throws SQLException{
 		String movieId, country, buf;
 		Scanner sc = new Scanner(str);
 		sc.useDelimiter("\t");
+		
 		// Check if there is another line of input
 		movieId = sc.next();
 		country = sc.next();
 		buf = "insert into GENRES values (" + movieId + ", '" + country + "')";
-		System.out.println(buf);
+		
+		//System.out.println(buf);
 		stmt.executeUpdate(buf);
 		sc.close();
 	}
