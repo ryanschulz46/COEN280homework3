@@ -7,20 +7,19 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Scanner;
 
-public class InsertTagMap {
+public class InsertMovie {
 
 	public static void ReadInsert(Connection con) throws SQLException { 
-		 
 		Statement stmt = con.createStatement(); 
-		 System.out.println("Inserting Tag Map Data ..."); 
+		 System.out.println("Inserting Movie Data ..."); 
 		
 		//dat file
-		File file = new File("assets/datafiles/tags.dat");
+		File file = new File("assets/datafiles/movies.dat");
 		Scanner sc = null;
 		 try {
 			 sc = new Scanner(file);
 	   // Check if there is another line of input
-			 String str = sc.nextLine();
+			 String str = sc.nextLine(); //skip header
 			 int i=0;
 			 while(i < 5){
 				 str = sc.nextLine();
@@ -35,22 +34,29 @@ public class InsertTagMap {
 	  
 		 sc.close();
 		 stmt.close();
-		 System.out.println("Finished adding");
+		 System.out.println("Finished adding movies");
 	}
  
 	private static void parseLine(String str, Statement stmt ) throws SQLException{
-		String id, value, buf;
+		String movieId, title, year, avg_critic_rating, num_critic_rating, buf;
 		Scanner sc = new Scanner(str);
 		sc.useDelimiter("\t");
 		// Check if there is another line of input
-		while(sc.hasNext()){
-			id = sc.next();
-			value = sc.next();
-			buf = "insert into TAG_MAP values (" + id + ", '" + value + "')";
-			System.out.println(buf);
-			stmt.executeUpdate(buf);
-		}
+		movieId = sc.next();
+		title = sc.next();
+		sc.next(); //skip imdbID
+		sc.next(); //skip spanish title
+		sc.next(); //skip imdbPictureURL
+		year = sc.next();
+		sc.next(); //skip rtID
+		avg_critic_rating = sc.next();
+		num_critic_rating = sc.next();
+		
+		buf = "insert into MOVIES values (" + movieId + ", '" + title + "', " + year + ", " + avg_critic_rating + ", " + num_critic_rating + ")";
+		System.out.println(buf);
+		stmt.executeUpdate(buf);
 		sc.close();
 	}
 	
 }
+

@@ -13,7 +13,8 @@ public class Populate {
         Connection con = null; 
         try { 
             con = DBConnectionManager.openConnection();
-            InsertTagMap tagMap = new InsertTagMap(con); 
+            //InsertTagMap tagMap = new InsertTagMap(con); 
+            InsertMovieTags.ReadInsert(con);
         } 
         catch (SQLException e) { 
             System.err.println("Errors occurs when communicating with the database server: " + e.getMessage()); 

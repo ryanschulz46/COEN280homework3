@@ -7,15 +7,15 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Scanner;
 
-public class InsertTagMap {
+public class InsertFilmCountry {
 
 	public static void ReadInsert(Connection con) throws SQLException { 
 		 
 		Statement stmt = con.createStatement(); 
-		 System.out.println("Inserting Tag Map Data ..."); 
+		 System.out.println("Inserting Film Country Data ..."); 
 		
 		//dat file
-		File file = new File("assets/datafiles/tags.dat");
+		File file = new File("assets/datafiles/movie_locations.dat");
 		Scanner sc = null;
 		 try {
 			 sc = new Scanner(file);
@@ -39,14 +39,14 @@ public class InsertTagMap {
 	}
  
 	private static void parseLine(String str, Statement stmt ) throws SQLException{
-		String id, value, buf;
+		String movieId, country, buf;
 		Scanner sc = new Scanner(str);
 		sc.useDelimiter("\t");
 		// Check if there is another line of input
 		while(sc.hasNext()){
-			id = sc.next();
-			value = sc.next();
-			buf = "insert into TAG_MAP values (" + id + ", '" + value + "')";
+			movieId = sc.next();
+			country = sc.next();
+			buf = "insert into FILM_COUNTRY values (" + movieId + ", '" + country + "')";
 			System.out.println(buf);
 			stmt.executeUpdate(buf);
 		}
