@@ -5,23 +5,23 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Scanner;
 
 public class InsertFilmCountry {
 	
-	private HashMap<String,String> repeatCheck;
+	private LinkedList<String> repeatCheck;
 	private Connection con;
 	private Statement stmt;
 	
 	public InsertFilmCountry(Connection con) throws SQLException {
 		this.con = con;
-		repeatCheck = new HashMap<String,String>();
+		repeatCheck = new LinkedList<String>();
 		ReadInsert();
 	}
 	
 	public void ReadInsert() throws SQLException { 
-		 System.out.println("Inserting Film Country Data"); 
+		 System.out.println("Inserting Film Country Data. Assuming data is sorted by movie_Id"); 
 		 Statement stmt = con.createStatement(); 
 		//dat file
 		File file = new File("assets/datafiles/movie_locations.dat");
@@ -45,15 +45,16 @@ public class InsertFilmCountry {
 		 System.out.println("Finished Film Country Data");
 	}
  
-	private void parseLine(String str, Statement stmt ) throws SQLException{
+	private void parseLine(String str, Statement stmt) throws SQLException{
 		String movieId, country, buf;
 		Scanner sc = new Scanner(str);
 		sc.useDelimiter("\t");
 		// Check if there is another line of input
 		movieId = sc.next();
 		
-		if(!repeatCheck.containsKey(movieId)) {
+		if(!repeatCheck.contains(movieId)) {
 			repeatCheck.clear(); //clear hashmap as its a new movie
+			repeatCheck.add(movieId);
 		}
 		
 		try {
@@ -68,12 +69,12 @@ public class InsertFilmCountry {
 			return;
 		}
 		
-		if(repeatCheck.containsValue(country)) {
+		if(repeatCheck.contains(country)) {
 			sc.close();
 			return;
 		}
 		else {
-			repeatCheck.put(movieId, country);
+			repeatCheck.add(country); //ADD TO LIST
 		}
 		
 		

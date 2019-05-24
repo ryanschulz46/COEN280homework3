@@ -3,6 +3,7 @@ package populate;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Scanner;
@@ -36,15 +37,25 @@ public class InsertMovieTags {
 		 System.out.println("Finished Movie Tag Data");
 	}
  
-	private static void parseLine(String str, Statement stmt ) throws SQLException{
-		String movieId, tagId, weight, buf;
+	private static void parseLine(String str, Statement stmt) throws SQLException{
+		String movieId, tagId, weight, tagName, buf;
 		Scanner sc = new Scanner(str);
 		sc.useDelimiter("\t");
 		// Check if there is another line of input
 		movieId = sc.next();
 		tagId = sc.next();
 		weight = sc.next();
-		buf = "insert into TAG_MOVIE_PAIR values (" + movieId + ", "+ tagId + ", " + weight + ")";
+		buf = "SELECT TAG_NAME FROM TAG_MAP WHERE TAG_ID = " + tagId;
+		//System.out.println(buf);
+		
+		ResultSet rs = stmt.executeQuery(buf);
+		buf = "INSERT INTO DASFA";
+		while(rs.next()) {
+			tagName = rs.getString("TAG_NAME");
+			buf = "insert into TAG_MOVIE_PAIR values (" + movieId + ", "+ tagId + ", " + weight + ", '" + tagName + "')";
+		}
+
+		
 		//System.out.println(buf);
 		stmt.executeUpdate(buf);
 		sc.close();

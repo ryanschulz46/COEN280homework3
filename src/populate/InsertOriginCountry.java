@@ -44,9 +44,13 @@ public class InsertOriginCountry {
 		movieId = sc.next();
 		try {
 			country = sc.next();
+			if(country.equals("")) {
+				sc.close();
+				return;
+			}
 			buf = "insert into ORIGIN_COUNTRY values (" + movieId + ", '" + country + "')";
 		} catch(Exception e) {
-			buf = "insert into ORIGIN_COUNTRY values (" + movieId + ", NULL)";
+			return;
 		}
 		
 		//System.out.println(buf);

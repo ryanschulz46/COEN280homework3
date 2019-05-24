@@ -41,7 +41,7 @@ public class InsertMovie {
 	private static void parseLine(String str, Statement stmt ) throws SQLException{
 		String movieId, title, year, avg_critic_rating, num_critic_rating, buf;
 		String doubleapost = "''";
-		String doublequotes = "\"\"";
+		String doublequotes = "\"";
 		Scanner sc = new Scanner(str);
 		sc.useDelimiter("\t");
 		
