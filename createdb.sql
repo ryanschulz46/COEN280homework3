@@ -50,15 +50,20 @@ FOREIGN KEY (MOVIE_ID) REFERENCES MOVIE(MOVIE_ID) ON DELETE CASCADE
 );
 
 
-SELECT DISTINCT O.COUNTRY
+SELECT DISTINCT film.COUNTRY
 FROM (
-SELECT G.MOVIE_ID AS ID
-from GENRES G
-where G.GENRE in ('Animation', 'Adventure', 'Children', 'Comedy', 'Crime', 'Mystery', 'Fantasy')
-group by G.MOVIE_ID
-having count(G.MOVIE_ID) = 7
-	) gen, ORIGIN_COUNTRY O
-WHERE O.MOVIE_ID = gen.ID;
+	SELECT G.MOVIE_ID AS ID
+	from GENRES G
+	where G.GENRE in ('Animation', 'Adventure', 'Children', 'Comedy', 'Crime', 'Mystery', 'Fantasy')
+	group by G.MOVIE_ID
+	having count(G.MOVIE_ID) = 7
+	) gen,
+	(
+	SELECT F.MOVIE_ID, F.COUNTRY
+	FROM FILM_COUNTRY F
+	GROUP BY F.MOVIE_ID, F.COUNTRY
+	) film
+WHERE film.MOVIE_ID = gen.ID;
 
 //OR
 SELECT DISTINCT user_id
