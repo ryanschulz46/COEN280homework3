@@ -27,7 +27,9 @@ import java.util.HashMap;
 import java.awt.Color;
 
 public class GUI {
+	private boolean queried;
 	private boolean active;
+	private JPanel counterPanel;
 	private ListManager listM;
 	private QueryMaker queryM;
 	private Connection con;
@@ -37,6 +39,7 @@ public class GUI {
 	private DefaultListModel originListModel;
 	private DefaultListModel filmListModel;
 	private DefaultListModel nameListModel;
+	private DefaultListModel tagListModel;
 	private JList genre_list;
 	public JFrame contain;
 	private JPanel panel;
@@ -61,6 +64,10 @@ public class GUI {
 	private JFormattedTextField tagWeight;
 	private JButton btnQuery;
 	private JLabel lblNumMovie;
+	private JLabel lblNumTag;
+	private JFormattedTextField numReview;
+	private JFormattedTextField avgReview;
+	private JLabel lblStatus;
 
 	
 	public GUI(Connection con) throws SQLException{
@@ -75,6 +82,7 @@ public class GUI {
 		queryM = new QueryMaker(this, listM);
 		reset();
 		System.out.println("All loaded");
+		queried = false;
 	}
 	
 	private void guiCreate() throws SQLException {
@@ -287,7 +295,7 @@ public class GUI {
 		
 		
 		//comboBoxFormat
-		String[] comboOpt = {"=", ">", "<", "<="};
+		String[] comboOpt = {"=", ">", "<", ">=", "<="};
 		
 		
 		//avg review
@@ -300,7 +308,7 @@ public class GUI {
 		avgCombo.setBounds(252, 18, 44, 32);
 		reviewPanel.add(avgCombo);
 		
-		JFormattedTextField avgReview = new JFormattedTextField(doubleFormat);
+		avgReview = new JFormattedTextField(doubleFormat);
 		avgReview.setBounds(317, 18, 128, 32);
 		reviewPanel.add(avgReview);
 		
@@ -315,7 +323,7 @@ public class GUI {
 		numCombo.setBounds(252, 81, 44, 32);
 		reviewPanel.add(numCombo);
 		
-		JFormattedTextField numReview = new JFormattedTextField(intFormat);
+		numReview = new JFormattedTextField(intFormat);
 		numReview.setBounds(317, 81, 128, 32);
 		reviewPanel.add(numReview);
 		
@@ -386,7 +394,8 @@ public class GUI {
 		lblTagNames.setHorizontalAlignment(SwingConstants.CENTER);
 		tagScroll.setColumnHeaderView(lblTagNames);
 		
-		JList tag_list = new JList();
+		tagListModel = new DefaultListModel();
+		JList tag_list = new JList(tagListModel);
 		tagScroll.setViewportView(tag_list);
 
 		//query
@@ -399,11 +408,11 @@ public class GUI {
 			public void actionPerformed(ActionEvent arg0) {
 				
 	
-				if(!listM.generateGenreQuery(genre_list)) {
+				if(!listM.generateGenreQuery(genre_list) || queried) {
 					return;
 				}
 				
-				
+	
 				String inputAvgCombo = (String) avgCombo.getSelectedItem();
 				String inputNumCombo = (String) numCombo.getSelectedItem();
 				String inputTagCombo = (String) tagCombo.getSelectedItem();
@@ -454,7 +463,14 @@ public class GUI {
 					e.printStackTrace();
 				}
 				
+				System.out.println("Query started");
+				setStatus("In progress");
 				queryM.displayNames(nameListModel);
+				queryM.displayTags(tagListModel);
+				
+				System.out.println("Query finished");
+				setStatus("Query finished");
+				queried = true;
 				
 				contain.pack();
 				contain.repaint();
@@ -465,12 +481,22 @@ public class GUI {
 		});
 		panel.add(btnQuery);
 		
-		JPanel counterPanel = new JPanel();
+		counterPanel = new JPanel();
 		counterPanel.setBounds(1156, 542, 195, 169);
 		panel.add(counterPanel);
+		counterPanel.setLayout(null);
 		
 		lblNumMovie = new JLabel("Numer of movies: 0");
+		lblNumMovie.setBounds(15, 5, 165, 26);
 		counterPanel.add(lblNumMovie);
+		
+		lblNumTag = new JLabel("Numer of tags: 0");
+		lblNumTag.setBounds(25, 63, 140, 26);
+		counterPanel.add(lblNumTag);
+		
+		lblStatus = new JLabel("Pre-query");
+		lblStatus.setBounds(47, 122, 92, 26);
+		counterPanel.add(lblStatus);
 		
 		//contain.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		//EXIT CRITERIA
@@ -501,11 +527,28 @@ public class GUI {
 		filmListModel.removeAllElements();
 		originListModel.removeAllElements();
 		genreListModel.removeAllElements();
+		nameListModel.removeAllElements();
+		tagListModel.removeAllElements();
 		listM.pushGenreList(genreListModel);
 		listM.reset();
+		queryM.reset();
 		andOrLock = false;
 		rdbtnAnd.setSelected(true);
 		isAndSet = true;
+		setJlabelName(0);
+		setJlabelTag(0);
+		tagWeight.setText("");
+		ceilYear.setText("");
+		floorYear.setText("");
+		avgReview.setText("");
+		numReview.setText("");
+		lblStatus.setText("Pre-query");
+		queried = false;
+		
+		
+		
+		
+		
 		contain.pack();
 		contain.repaint();
 	}
@@ -525,11 +568,23 @@ public class GUI {
 		return andOrLock;
 	}
 	
-	public void setJlabel(int name) {
+	public void setJlabelName(int name) {
 		String str = "Num of movies: " + name;
 		lblNumMovie.setText(str);
 		contain.repaint();
 	}
+	
+	public void setJlabelTag(int tag) {
+		String str = "Num of tags: " + tag;
+		lblNumTag.setText(str);
+		contain.repaint();
+	}
+	
+	public void setStatus(String buf) {
+		lblStatus.setText(buf);
+		contain.repaint();
+	}
+	
 	
 	public boolean getActive() {
 		return active;

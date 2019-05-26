@@ -15,10 +15,10 @@ public class Populate {
         Connection con = null; 
         try { 
             con = DBConnectionManager.openConnection();
-           // InsertMovie.ReadInsert(con);
-            //InsertGenres.ReadInsert(con);
-           // InsertTagMap.ReadInsert(con);
-           // InsertMovieTags.ReadInsert(con);
+            InsertMovie.ReadInsert(con);
+            InsertGenres.ReadInsert(con);
+            InsertTagMap.ReadInsert(con);
+            InsertMovieTags.ReadInsert(con);
             InsertOriginCountry.ReadInsert(con);
             InsertFilmCountry filmCountry = new InsertFilmCountry(con);
             System.out.println("All files were successfully added to the database.");

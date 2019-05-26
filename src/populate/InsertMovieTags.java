@@ -45,15 +45,8 @@ public class InsertMovieTags {
 		movieId = sc.next();
 		tagId = sc.next();
 		weight = sc.next();
-		buf = "SELECT TAG_NAME FROM TAG_MAP WHERE TAG_ID = " + tagId;
 		//System.out.println(buf);
-		
-		ResultSet rs = stmt.executeQuery(buf);
-		buf = "INSERT INTO DASFA";
-		while(rs.next()) {
-			tagName = rs.getString("TAG_NAME");
-			buf = "insert into TAG_MOVIE_PAIR values (" + movieId + ", "+ tagId + ", " + weight + ", '" + tagName + "')";
-		}
+		buf = "insert into TAG_MOVIE_PAIR values (" + movieId + ", "+ tagId + ", " + weight + ")";
 
 		
 		//System.out.println(buf);

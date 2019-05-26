@@ -39,7 +39,7 @@ public class ListManager {
 	// select genres from DB into a list
 	public void genreDbToList(Connection con) throws SQLException {
 		Statement stmt = con.createStatement(); 
-		ResultSet rs = stmt.executeQuery("SELECT DISTINCT G.GENRE FROM GENRES G");
+		ResultSet rs = stmt.executeQuery("SELECT DISTINCT G.GENRE FROM GENRES G ORDER BY G.GENRE ASC");
 		String tag;
 		genreList.clear();
 		while(rs.next()) {
@@ -94,13 +94,13 @@ public class ListManager {
 		boolean success = generateGenreQuery(genre_list);
 		
 		if(gui.getAndSet()) {
-			bufOrigin = "SELECT DISTINCT O.COUNTRY AS COUNTRY FROM (SELECT G.MOVIE_ID AS ID FROM GENRES G WHERE G.GENRE IN (" + genreSelectText + ") GROUP BY G.MOVIE_ID HAVING COUNT(G.MOVIE_ID) = " + genreSelectSize + ") gen, ORIGIN_COUNTRY O WHERE O.MOVIE_ID = gen.ID";
-			bufFilm = "SELECT DISTINCT film.COUNTRY AS COUNTRY FROM (SELECT G.MOVIE_ID AS ID FROM GENRES G WHERE G.GENRE IN (" + genreSelectText + ") GROUP BY G.MOVIE_ID HAVING COUNT(G.MOVIE_ID) = " + genreSelectSize + ") gen,(SELECT F.MOVIE_ID, F.COUNTRY FROM FILM_COUNTRY F GROUP BY F.MOVIE_ID, F.COUNTRY ) film WHERE film.MOVIE_ID = gen.ID";
+			bufOrigin = "SELECT DISTINCT O.COUNTRY AS COUNTRY FROM (SELECT G.MOVIE_ID AS ID FROM GENRES G WHERE G.GENRE IN (" + genreSelectText + ") GROUP BY G.MOVIE_ID HAVING COUNT(G.MOVIE_ID) = " + genreSelectSize + ") gen, ORIGIN_COUNTRY O WHERE O.MOVIE_ID = gen.ID ORDER BY O.COUNTRY ASC";
+			bufFilm = "SELECT DISTINCT film.COUNTRY AS COUNTRY FROM (SELECT G.MOVIE_ID AS ID FROM GENRES G WHERE G.GENRE IN (" + genreSelectText + ") GROUP BY G.MOVIE_ID HAVING COUNT(G.MOVIE_ID) = " + genreSelectSize + ") gen,(SELECT F.MOVIE_ID, F.COUNTRY FROM FILM_COUNTRY F GROUP BY F.MOVIE_ID, F.COUNTRY ) film WHERE film.MOVIE_ID = gen.ID ORDER BY film.COUNTRY ASC";
 		}
 		else {
 			//or set
-			bufOrigin = "SELECT DISTINCT O.COUNTRY AS COUNTRY FROM (SELECT G.MOVIE_ID AS ID FROM GENRES G WHERE G.GENRE IN(" + genreSelectText + " )) gen, ORIGIN_COUNTRY O WHERE O.MOVIE_ID = gen.ID";
-			bufFilm = "SELECT DISTINCT film.COUNTRY AS COUNTRY FROM (SELECT G.MOVIE_ID AS ID FROM GENRES G WHERE G.GENRE IN(" + genreSelectText + " )) gen,(SELECT F.MOVIE_ID, F.COUNTRY FROM FILM_COUNTRY F GROUP BY F.MOVIE_ID, F.COUNTRY ) film WHERE film.MOVIE_ID = gen.ID";
+			bufOrigin = "SELECT DISTINCT O.COUNTRY AS COUNTRY FROM (SELECT G.MOVIE_ID AS ID FROM GENRES G WHERE G.GENRE IN(" + genreSelectText + " )) gen, ORIGIN_COUNTRY O WHERE O.MOVIE_ID = gen.ID ORDER BY O.COUNTRY ASC";
+			bufFilm = "SELECT DISTINCT film.COUNTRY AS COUNTRY FROM (SELECT G.MOVIE_ID AS ID FROM GENRES G WHERE G.GENRE IN(" + genreSelectText + " )) gen,(SELECT F.MOVIE_ID, F.COUNTRY FROM FILM_COUNTRY F GROUP BY F.MOVIE_ID, F.COUNTRY ) film WHERE film.MOVIE_ID = gen.ID ORDER BY film.COUNTRY ASC";
 		}
 		
 		originDbToList(con, bufOrigin);
@@ -160,8 +160,10 @@ public class ListManager {
 		bufFilm = "";
 		originList.clear();
 		filmList.clear();
+		genreSelected = "";
+		genreQuery = "";
+		genreSelectSize =0;
+		genreSelectText = "";
 	}
-	
-	
 	
 }
