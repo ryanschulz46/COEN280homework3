@@ -3,6 +3,7 @@ package populate;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Scanner;
@@ -11,8 +12,10 @@ public class InsertTagMap {
 
 	public static void ReadInsert(Connection con) throws SQLException { 
 		 
-		Statement stmt = con.createStatement(); 
-		 System.out.println("Inserting Tag Map Data"); 
+		Statement stmt = con.createStatement();
+		 
+
+		System.out.println("Inserting Tag Map Data"); 
 		
 		//dat file
 		File file = new File("assets/datafiles/tags.dat");
@@ -33,7 +36,7 @@ public class InsertTagMap {
 	  
 		 sc.close();
 		 stmt.close();
-		 System.out.println("Finished Tag Map Data");
+		 System.out.println("Finished Tag Map Data\n");
 	}
  
 	private static void parseLine(String str, Statement stmt ) throws SQLException{

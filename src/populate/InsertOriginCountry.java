@@ -12,6 +12,9 @@ public class InsertOriginCountry {
 	public static void ReadInsert(Connection con) throws SQLException { 
 		 
 		Statement stmt = con.createStatement(); 
+		
+
+		
 		 System.out.println("Inserting Origin Country Data"); 
 		
 		//dat file
@@ -33,7 +36,7 @@ public class InsertOriginCountry {
 	  
 		 sc.close();
 		 stmt.close();
-		 System.out.println("Finished Origin Country Data");
+		 System.out.println("Finished Origin Country Data\n");
 	}
  
 	private static void parseLine(String str, Statement stmt ) throws SQLException{
@@ -45,6 +48,7 @@ public class InsertOriginCountry {
 		try {
 			country = sc.next();
 			if(country.equals("")) {
+				System.out.println("Error: Movie ID " + movieId + "has no country name. Avoiding.");
 				sc.close();
 				return;
 			}

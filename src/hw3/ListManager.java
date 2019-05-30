@@ -23,6 +23,10 @@ public class ListManager {
 	private String genreQuery;
 	private int genreSelectSize;
 	private String genreSelectText;
+	private int originSelectSize;
+	private String originSelected;
+	private String filmQuery;
+	private String originSelectText;
 	
 	
 	public ListManager(GUI gui){
@@ -44,8 +48,9 @@ public class ListManager {
 		genreList.clear();
 		while(rs.next()) {
 			tag = rs.getString("GENRE");
-			genreList.add(tag);
+			genreList.add(tag); //genreList is ArrayList<String>
 		}
+		stmt.close();
 		return;	
 	}
 	
@@ -59,6 +64,11 @@ public class ListManager {
 	
 	
 	
+	
+	
+	
+	
+	
 	public boolean generateGenreQuery(JList genre_list) {
 		List<String> genreSelected = genre_list.getSelectedValuesList();
 		if(genreSelected.size() == 0) {
@@ -67,6 +77,8 @@ public class ListManager {
 		}
 		
 		
+		genreSelectText = "";
+		genreQuery = "";
 
 		for (int i=0; i < genreSelected.size(); i++)
 		{
@@ -88,10 +100,61 @@ public class ListManager {
 		return true;
 	}
 	
+	
+	public boolean getOriginSelection(JList origin_list, Connection con) throws SQLException {
+		List<String> originSelected = origin_list.getSelectedValuesList();
+		if(originSelected.size() == 0) {
+			JOptionPane.showMessageDialog(gui.contain, "Must selecte a origin");
+			return false;
+		}
+		
+		originSelectText = "";
+		filmQuery = "";
+		
+		for (int i=0; i < originSelected.size(); i++)
+		{
+			if(i==0) {
+				originSelectText = "'" + originSelected.get(i) + "'";
+			}
+			else {
+				originSelectText += ", '" + originSelected.get(i) + "'";
+			}
+		}
+		
+		
+		
+		originSelectSize = originSelected.size();
+		if(!gui.getAndSet()) { //or set
+			filmQuery = " SELECT DISTINCT FILM.COUNTRY AS COUNTRY FROM (SELECT gen.ID AS ID FROM (SELECT G.MOVIE_ID AS ID FROM GENRES G WHERE G.GENRE IN(" + genreSelectText + " )) gen, "
+					+ "(SELECT O.MOVIE_ID AS ID FROM ORIGIN_COUNTRY O WHERE O.COUNTRY IN("+ originSelectText + ")) origin"
+					+ " WHERE gen.ID = origin.ID) orig,"
+					+ "(SELECT F.MOVIE_ID, F.COUNTRY FROM FILM_COUNTRY F GROUP BY F.MOVIE_ID, F.COUNTRY)"
+					+ " FILM WHERE FILM.MOVIE_ID = orig.ID ORDER BY FILM.COUNTRY ASC";
+		}
+		else { //and set
+			filmQuery = " SELECT DISTINCT FILM.COUNTRY AS COUNTRY FROM (SELECT gen.ID AS ID FROM (SELECT G.MOVIE_ID AS ID FROM GENRES G WHERE G.GENRE IN(" + genreSelectText + " ) GROUP BY G.MOVIE_ID HAVING COUNT(G.MOVIE_ID) = " + genreSelectSize + ") gen, "
+					+ " (SELECT O.MOVIE_ID AS ID FROM ORIGIN_COUNTRY O WHERE O.COUNTRY IN("+ originSelectText + ") GROUP BY O.MOVIE_ID HAVING COUNT(O.MOVIE_ID) = " + originSelectSize +  ") origin"
+					+ " WHERE gen.ID = origin.ID) orig,"
+					+ "(SELECT F.MOVIE_ID, F.COUNTRY FROM FILM_COUNTRY F GROUP BY F.MOVIE_ID, F.COUNTRY" + 
+					") FILM WHERE FILM.MOVIE_ID = orig.ID ORDER BY FILM.COUNTRY ASC";
+		}
+		
+		System.out.println(filmQuery);
+		
+		filmDbToList(con,filmQuery);
+		
+		return true;
+	}
+		
+		
+	
+	
+	
 	//get genres selected by user
 	public boolean getGenreSelection(JList genre_list, Connection con) throws SQLException{
 		
 		boolean success = generateGenreQuery(genre_list);
+		bufOrigin = "";
 		
 		if(gui.getAndSet()) {
 			bufOrigin = "SELECT DISTINCT O.COUNTRY AS COUNTRY FROM (SELECT G.MOVIE_ID AS ID FROM GENRES G WHERE G.GENRE IN (" + genreSelectText + ") GROUP BY G.MOVIE_ID HAVING COUNT(G.MOVIE_ID) = " + genreSelectSize + ") gen, ORIGIN_COUNTRY O WHERE O.MOVIE_ID = gen.ID ORDER BY O.COUNTRY ASC";
@@ -104,7 +167,7 @@ public class ListManager {
 		}
 		
 		originDbToList(con, bufOrigin);
-		filmDbToList(con,bufFilm);
+		filmDbToList(con, bufFilm);
 		return success;
 	}
 
@@ -125,6 +188,7 @@ public class ListManager {
 			tag = rs.getString("COUNTRY");
 			originList.add(tag);
 		}
+		stmt.close();
 		return;	
 	}
 	
@@ -146,6 +210,7 @@ public class ListManager {
 			tag = rs.getString("COUNTRY");
 			filmList.add(tag);
 		}
+		stmt.close();
 		return;	
 	}
 	
@@ -154,6 +219,11 @@ public class ListManager {
 		filmList.forEach((n) -> filmLM.addElement(n));
 	}
 
+	
+	public void resetNoUnselect()
+	{
+		
+	}
 
 	public void reset() {
 		bufOrigin = "";
@@ -164,6 +234,9 @@ public class ListManager {
 		genreQuery = "";
 		genreSelectSize =0;
 		genreSelectText = "";
+		originSelectSize = 0;
+		originSelectText = "";
+		originSelected = "";
 	}
 	
 }

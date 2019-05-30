@@ -12,6 +12,9 @@ public class InsertGenres {
 	public static void ReadInsert(Connection con) throws SQLException { 
 		 
 		Statement stmt = con.createStatement(); 
+		
+
+		
 		 System.out.println("Inserting Genres Data"); 
 		
 		//dat file
@@ -33,7 +36,7 @@ public class InsertGenres {
 	  
 		 sc.close();
 		 stmt.close();
-		 System.out.println("Finished Genres Data");
+		 System.out.println("Finished Genres Data\n");
 	}
  
 	private static void parseLine(String str, Statement stmt ) throws SQLException{

@@ -17,12 +17,19 @@ public class QueryMaker {
 	private ListManager listM;
 	private ArrayList<String> nameList;
 	private ArrayList<String> tagList;
+	private String origin;
+	private String film;
+	private int averageMode;
 	
 	public QueryMaker(GUI gui, ListManager listM) {
 		this.gui = gui;
 		this.listM = listM;
 		nameList = new ArrayList<String>();
 		tagList = new ArrayList<String>();
+		origin = "";
+		film = "";
+		averageMode = 0;
+		
 	}
 	
 	public void intakeData(JList origin_list, JList film_list, Connection con, double avg, int num, int fYear, int cYear, int tag, String tagCombo, String avgCombo, String numCombo) throws SQLException {
@@ -33,7 +40,7 @@ public class QueryMaker {
 		}
 		
 		String originFilmWhere = "";
-		String origin = generateOriginQuery(origin_list);
+		origin = generateOriginQuery(origin_list);
 		if(origin.equals("")) {
 			originFilmWhere ="";
 		}
@@ -41,19 +48,34 @@ public class QueryMaker {
 			originFilmWhere = " AND review.ID = orig.ID";
 		}
 		
-		String film = generateFilmQuery(film_list);
+		film = generateFilmQuery(film_list);
 		if(!film.equals("")) {
 			originFilmWhere += " AND review.ID = film.ID";
 		}
 		
+		
+		String numType = "AVG_NUM_RATINGS";
+		String avgType;
+		
+		if(averageMode == 0) {
+			avgType = "AVG_TOP_CRITIC";
+			numType = "NUM_TOP_CRITIC";
+		}
+		else if(averageMode == 1) {
+			avgType = "AVG_RATING_A";
+		}
+		else {
+			avgType = "AVG_RATING_B";
+		}
+		
 		String nameQuery = "SELECT DISTINCT review.NAME as NAME FROM (SELECT M0.MOVIE_ID AS ID FROM MOVIE M0 WHERE M0.YEAR >= "
-				+ fYear + " AND M0.YEAR <= " + cYear + " ) year, (SELECT M1.MOVIE_ID AS ID, M1.NAME AS NAME FROM MOVIE M1 WHERE M1.CRITIC_RATING " 
-				+ avgCombo + avg + " AND M1.NUM_RATINGS " + numCombo + num + ") review, " + origin + film + listM.getGenreQuery() 
+				+ fYear + " AND M0.YEAR <= " + cYear + " ) year, (SELECT M1.MOVIE_ID AS ID, M1.NAME AS NAME FROM MOVIE M1 WHERE M1."+  avgType + " " 
+				+ avgCombo + avg + " AND M1." + numType + " " + numCombo + num + ") review, " + origin + film + listM.getGenreQuery() 
 				+ "WHERE review.ID = year.ID AND review.ID = gen.ID" + originFilmWhere;
 		
 		String query = "SELECT review.ID as ID FROM (SELECT M0.MOVIE_ID AS ID FROM MOVIE M0 WHERE M0.YEAR >= "
-				+ fYear + " AND M0.YEAR <= " + cYear + " ) year, (SELECT M1.MOVIE_ID AS ID, M1.NAME AS NAME FROM MOVIE M1 WHERE M1.CRITIC_RATING " 
-				+ avgCombo + avg + " AND M1.NUM_RATINGS " + numCombo + num + ") review, " + origin + film + listM.getGenreQuery() 
+				+ fYear + " AND M0.YEAR <= " + cYear + " ) year, (SELECT M1.MOVIE_ID AS ID, M1.NAME AS NAME FROM MOVIE M1 WHERE M1." + avgType + " " 
+				+ avgCombo + avg + " AND M1." + numType  +" "+ numCombo + num + ") review, " + origin + film + listM.getGenreQuery() 
 				+ "WHERE review.ID = year.ID AND review.ID = gen.ID" + originFilmWhere;
 		
 		String tagQuery = "SELECT DISTINCT TM.TAG_NAME AS TAG FROM (SELECT T.TAG_ID AS TID FROM( " + query + ") name, TAG_MOVIE_PAIR T"
@@ -73,6 +95,7 @@ public class QueryMaker {
 			resultName = rs.getString("NAME");
 			nameList.add(resultName);
 		}
+		stmt.close();
 		
 		
 		Statement stmtTag = con.createStatement(); 
@@ -83,6 +106,7 @@ public class QueryMaker {
 			resultTag = rsTag.getString("TAG");
 			tagList.add(resultTag);
 		}
+		stmtTag.close();
 	
 		return;
 			
@@ -117,6 +141,7 @@ public class QueryMaker {
 					+ ") GROUP BY O.MOVIE_ID HAVING COUNT(O.MOVIE_ID) = " + originSelected.size() + ") orig, ";
 		}
 		
+		origin = originQuery;
 		return originQuery;
 	}
 	
@@ -146,12 +171,21 @@ public class QueryMaker {
 			filmQuery = "(SELECT F.MOVIE_ID AS ID FROM FILM_COUNTRY F WHERE F.COUNTRY IN(" + filmSelectText + " )) film, ";
 		}
 		else { //and set
-			filmQuery = "(SELECT F.MOVIE_ID AS ID FROM FILM_COUNTRY F WHERE F.COUNTRY IN(" + filmSelectText 
-					+ ") GROUP BY F.MOVIE_ID HAVING COUNT(F.MOVIE_ID) = " + filmSelected.size() + ") film, ";
+			filmQuery = "(SELECT inFilm.ID AS ID FROM (SELECT F.MOVIE_ID AS ID, F.COUNTRY AS COUNTRY "
+					 + "FROM FILM_COUNTRY F GROUP BY F.MOVIE_ID, F.COUNTRY) inFilm WHERE inFilm.COUNTRY IN("
+					+ filmSelectText +")"
+					 + " GROUP BY inFilm.ID HAVING COUNT(inFilm.ID) = " + filmSelected.size() + ") film, "; 
 		}
 		
+		System.out.println(filmQuery);
 		return filmQuery;
 	}
+	
+ 
+	public void setAvgMode(int x) {
+		averageMode = x;
+	}
+	
 	
 	public void reset() {
 		nameList.clear();

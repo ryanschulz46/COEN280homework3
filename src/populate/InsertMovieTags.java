@@ -13,6 +13,8 @@ public class InsertMovieTags {
 	public static void ReadInsert(Connection con) throws SQLException { 
 		 
 		Statement stmt = con.createStatement(); 
+		
+
 		 System.out.println("Inserting Movie Tag Data"); 
 		
 		//dat file
@@ -34,7 +36,7 @@ public class InsertMovieTags {
 	  
 		 sc.close();
 		 stmt.close();
-		 System.out.println("Finished Movie Tag Data");
+		 System.out.println("Finished Movie Tag Data\n");
 	}
  
 	private static void parseLine(String str, Statement stmt) throws SQLException{

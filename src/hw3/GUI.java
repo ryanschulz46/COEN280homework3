@@ -52,7 +52,7 @@ public class GUI {
 	private JScrollPane film_scrollPane;
 	private JList film_list;
 	private JLabel lblFilmCountry;
-	private JButton btnAddCountries;
+	private JButton btnLoadOrigin;
 	private JRadioButton rdbtnAnd;
 	private JRadioButton rdbtnOr;
 	private JLabel lblMovieWasReleased;
@@ -105,6 +105,10 @@ public class GUI {
 		
 	
 		
+		
+		
+		
+		
 		//genre list set up
 		genre_scrollPane = new JScrollPane();
 		genre_scrollPane.setBounds(21, 40, 226, 400);
@@ -114,6 +118,13 @@ public class GUI {
 		genre_list = new JList(genreListModel);
 		genre_list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		genre_scrollPane.setViewportView(genre_list);
+		
+		
+		
+		
+		
+		
+		
 		
 		lblGenre = new JLabel("Genre");
 		lblGenre.setHorizontalAlignment(SwingConstants.CENTER);
@@ -158,14 +169,15 @@ public class GUI {
 
 		
 		//btn next steo
-		btnAddCountries = new JButton("Load countries options");
-		btnAddCountries.addActionListener(new ActionListener() {
+		btnLoadOrigin = new JButton("Load origin from genre");
+		btnLoadOrigin.addActionListener(new ActionListener() {
 			public void btnAddCountries(ActionEvent arg0) {
 			}
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				// TODO Auto-generated method stub
-			
+					nameListModel.clear();
+					tagListModel.clear();
 					
 					try {
 						boolean success = listM.getGenreSelection(genre_list, con);
@@ -179,20 +191,68 @@ public class GUI {
 						e.printStackTrace();
 						System.out.println("Error btnAddCountries end");
 					}
-					if(!andOrLock) {
+					
+					setJlabelName(0);
+					setJlabelTag(0);
+					lblStatus.setText("Pre-query");
+					
+						originListModel.clear();
+						filmListModel.clear();
 						listM.pushOriginList(originListModel);
 						listM.pushFilmList(filmListModel);
 						andOrLock = true;
-					}
+					
 					
 					contain.pack();
 					contain.repaint();
 				}
 			
 		});
-		btnAddCountries.setBounds(238, 457, 319, 35);
-		panel.add(btnAddCountries);
+		btnLoadOrigin.setBounds(268, 457, 248, 35);
+		panel.add(btnLoadOrigin);
 		
+		
+		
+		JButton btnLoadFilm = new JButton("Refine from origin");
+		btnLoadFilm.setBounds(537, 457, 300, 35);
+		btnLoadFilm.addActionListener(new ActionListener() {
+			public void btnAddCountries(ActionEvent arg0) {
+			}
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+					nameListModel.clear();
+					tagListModel.clear();
+					
+					try {
+						boolean success = listM.getOriginSelection(origin_list, con);
+						if(!success) {
+							reset();
+							return;
+						}
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						System.out.println("Error btnAddFilm start");
+						e.printStackTrace();
+						System.out.println("Error btnAddFilmend");
+					}
+					
+					setJlabelName(0);
+					setJlabelTag(0);
+					
+					lblStatus.setText("Pre-query");
+						filmListModel.clear();
+						
+						listM.pushFilmList(filmListModel);
+						andOrLock = true;
+				
+					
+					contain.pack();
+					contain.repaint();
+				}
+			
+		});
+		panel.add(btnLoadFilm);
 		
 				
 		//radio buttons			
@@ -215,7 +275,7 @@ public class GUI {
 					andOrLock = false;
 					rdbtnOr.setSelected(true);
 					andOrLock = true;
-					JOptionPane.showMessageDialog(contain, "AndOr Switching is locked mid query");
+					JOptionPane.showMessageDialog(contain, "Must press reset button to switch between And/Or");
 				}
 			}	
 		});
@@ -240,7 +300,7 @@ public class GUI {
 					andOrLock = false;
 					rdbtnAnd.setSelected(true);
 					andOrLock = true;
-					JOptionPane.showMessageDialog(contain, "AndOr Switching is locked mid query");
+					JOptionPane.showMessageDialog(contain, "Must press reset button to switch between And/Or");
 				}
 			}	
 		});
@@ -254,12 +314,18 @@ public class GUI {
 		
 		
 		JButton btnReset = new JButton("Reset");
-		btnReset.setBounds(617, 457, 141, 35);
+		btnReset.setBounds(882, 62, 141, 35);
 		btnReset.addActionListener(new ActionListener() {
 			public void btnAddCountries(ActionEvent arg0) {
 			}
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				tagWeight.setText("");
+				ceilYear.setText("");
+				floorYear.setText("");
+				avgReview.setText("");
+				numReview.setText("");
+				lblStatus.setText("Pre-query");
 				reset();
 			}
 			
@@ -397,6 +463,15 @@ public class GUI {
 		tagListModel = new DefaultListModel();
 		JList tag_list = new JList(tagListModel);
 		tagScroll.setViewportView(tag_list);
+		
+		
+		String[] avgOptions = {"Avg_Critic_Rating", "Avg_All_Rating", "Weighted_Avg_All_Rating"};
+		JComboBox comboBox = new JComboBox(avgOptions);
+		comboBox.setSelectedIndex(0);
+		comboBox.setBounds(1061, 63, 280, 32);
+		panel.add(comboBox);
+		
+		
 
 		//query
 		btnQuery = new JButton("QUERY");
@@ -408,19 +483,34 @@ public class GUI {
 			public void actionPerformed(ActionEvent arg0) {
 				
 	
-				if(!listM.generateGenreQuery(genre_list) || queried) {
+				if(!listM.generateGenreQuery(genre_list)) {
 					return;
 				}
+				
+				queryM.reset();
+				nameListModel.clear();
+				tagListModel.clear();
 				
 	
 				String inputAvgCombo = (String) avgCombo.getSelectedItem();
 				String inputNumCombo = (String) numCombo.getSelectedItem();
 				String inputTagCombo = (String) tagCombo.getSelectedItem();
+				String avgOption = (String) comboBox.getSelectedItem();
 				int inputTag;
 				double inputAvg;
 				int inputNum;
 				int inputCeil;
 				int inputFloor;
+				
+				if(avgOption.equals("Avg_Critic_Rating")) {
+					queryM.setAvgMode(0);
+				}
+				else if(avgOption.equals("Avg_All_Rating")) {
+					queryM.setAvgMode(1);
+				}
+				else {
+					queryM.setAvgMode(2);
+				}
 				
 				
 				try {
@@ -498,6 +588,10 @@ public class GUI {
 		lblStatus.setBounds(47, 122, 92, 26);
 		counterPanel.add(lblStatus);
 		
+		
+
+	
+		
 		//contain.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		//EXIT CRITERIA
 		contain.addWindowListener(new WindowAdapter()
@@ -537,12 +631,7 @@ public class GUI {
 		isAndSet = true;
 		setJlabelName(0);
 		setJlabelTag(0);
-		tagWeight.setText("");
-		ceilYear.setText("");
-		floorYear.setText("");
-		avgReview.setText("");
-		numReview.setText("");
-		lblStatus.setText("Pre-query");
+
 		queried = false;
 		
 		
