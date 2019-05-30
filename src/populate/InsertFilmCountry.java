@@ -105,18 +105,6 @@ public void ReadInsert() throws SQLException {
 */
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 package populate;
 
 import java.io.File;
@@ -129,10 +117,11 @@ import java.util.Scanner;
 
 public class InsertFilmCountry {
 	
+	public static int avoided;
 	
 	public static void ReadInsert(Connection con) throws SQLException { 
 		
-		
+		avoided = 0;
 		Statement stmt = con.createStatement();
 
 		 System.out.println("Inserting Film Country Data"); 
@@ -156,6 +145,7 @@ public class InsertFilmCountry {
 	  
 		 sc.close();
 		 stmt.close();
+		 System.out.println("Did not add "+ avoided +" movie locations due to all null values.");
 		 System.out.println("Finished Film Country Data\n");
 	}
  
@@ -178,6 +168,7 @@ public class InsertFilmCountry {
 		if(country.equals("")) {
 			sc.close();
 			System.out.println("Error: MovieID " + movieId + " location data is all NULL. Avoiding.");
+			avoided++;
 			return;
 		}
 

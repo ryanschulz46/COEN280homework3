@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Date;
+import java.util.Scanner;
 
 import javax.swing.Timer;
 
@@ -19,7 +20,26 @@ public class Populate{
 
 	public static void main(String[] args) {
 		
+		System.out.print("Type 'Yes' to run on only necessary, 'All' to run on all tables, anything else to cancel\nWhat do you want to do: ");
+		Scanner sc = new Scanner(System.in);
+		String input = sc.next();
+		sc.close();
+		
+		int insertMode;
+		if (input.equals("Yes")) {
+			insertMode = 0;
+		}
+		else if (input.equals("All")) {
+			insertMode = 1;
+		}
+		else {
+			System.out.println("Exiting");
+			return;
+		}
+		
+		
 		Connection con = null; 
+		
 		try { 
 
 			long t = System.currentTimeMillis();
@@ -28,7 +48,7 @@ public class Populate{
 			con = DBConnectionManager.openConnection();
 			System.out.println("Connection opened\n");
 
-			int insertMode = 0;
+			
 			
 			
 			IndexManager.removeIndex(con);
@@ -71,9 +91,10 @@ public class Populate{
 			InsertFilmCountry.ReadInsert(con); //2 min 30 seconds up to here
 			
 			
-			printTime(t); //all tables after this are not used in queries
+			
 			
 			if(insertMode == 1) {
+			printTime(t);
 			InsertMovieActors.ReadInsert(con);
 			InsertMovieDirectors.ReadInsert(con);
 			InsertUserRated.ReadInsert(con);
