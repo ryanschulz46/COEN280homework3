@@ -1,3 +1,10 @@
+/*
+ * Ryan Schulz
+ * COEN 280
+ * Project 3
+ * Due 5/31/2019
+ */
+
 package hw3;
 
 import java.awt.BorderLayout;
@@ -352,11 +359,6 @@ public class GUI {
 		NumberFormat intFormat = NumberFormat.getIntegerInstance();
 		intFormat.setGroupingUsed(false);
 		
-		/*NumberFormatter intFormat = new NumberFormatter(numFormat);
-	    intFormat.setValueClass(Integer.class);
-	    intFormat.setMinimum(0);
-	    intFormat.setMaximum(2019);
-	    intFormat.setAllowsInvalid(false);*/
 		intFormat.setRoundingMode(RoundingMode.HALF_UP);
 		
 		
@@ -437,7 +439,7 @@ public class GUI {
 		
 		
 		
-		//results
+		//QUERY RESULTS
 		JScrollPane movieScroll = new JScrollPane();
 		movieScroll.setBounds(21, 519, 495, 260);
 		panel.add(movieScroll);
@@ -473,7 +475,7 @@ public class GUI {
 		
 		
 
-		//query
+		//QUERY
 		btnQuery = new JButton("QUERY");
 		btnQuery.setBounds(893, 421, 448, 71);
 		btnQuery.addActionListener(new ActionListener() {
@@ -512,6 +514,10 @@ public class GUI {
 					queryM.setAvgMode(2);
 				}
 				
+				/*
+				 * try catch sets defaults for things if we do not add anything
+				 * for example, no years entered will set 0 to 3000 so query encompasses everything
+				 */
 				
 				try {
 					inputTag = Integer.parseInt(tagWeight.getText());
@@ -592,7 +598,6 @@ public class GUI {
 
 	
 		
-		//contain.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		//EXIT CRITERIA
 		contain.addWindowListener(new WindowAdapter()
 		{
@@ -609,11 +614,11 @@ public class GUI {
 		contain.pack();
 		contain.setVisible(true);
 		
-		// Jframe packing
 
 
 	}
-
+	
+	//when the reset button is hit
 	public void reset() {
 		film_list.clearSelection();
 		origin_list.clearSelection();
@@ -642,6 +647,12 @@ public class GUI {
 		contain.repaint();
 	}
 	
+	
+	
+
+	/*
+	 * Getters and setters
+	 */
 	public Connection getCon() {
 		return con;
 	}

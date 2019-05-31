@@ -1,3 +1,10 @@
+/*
+ * Ryan Schulz
+ * COEN 280
+ * Project 3
+ * Due 5/31/2019
+ */
+
 package hw3;
 
 import java.sql.Connection;

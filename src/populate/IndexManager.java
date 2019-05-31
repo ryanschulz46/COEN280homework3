@@ -1,3 +1,10 @@
+/*
+ * Ryan Schulz
+ * COEN 280
+ * Project 3
+ * Due 5/31/2019
+ */
+
 package populate;
 
 import java.sql.Connection;
@@ -11,7 +18,7 @@ public class IndexManager {
 		Statement stmt = con.createStatement(); 
 		
 		System.out.println("Deleting all indexes");
-		
+		//need try/catch as it will throw exception is index does not exist.
 		try {
 			stmt.executeQuery("DROP INDEX MOVIE_INDEX");
 		}catch(Exception e) {

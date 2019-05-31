@@ -1,3 +1,10 @@
+/*
+ * Ryan Schulz
+ * COEN 280
+ * Project 3
+ * Due 5/31/2019
+ */
+
 package populate;
 
 import java.io.File;
@@ -74,10 +81,11 @@ public class InsertMovie {
 		audience_num = sc.next();
 		
 
-		
+		//escape ' for sql
 		title = title.replaceAll(doubleapost, doublequotes); //remove any special values from sql
 		title = title.replaceAll("'", doubleapost);
 		
+		//check if ratings are numbers, if not set to 0.
 		if(!NumberUtils.isCreatable(avg_critic_rating)){ //ensures rating is a number
 			avg_critic_rating = "0";
 		}

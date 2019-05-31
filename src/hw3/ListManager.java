@@ -1,3 +1,10 @@
+/*
+ * Ryan Schulz
+ * COEN 280
+ * Project 3
+ * Due 5/31/2019
+ */
+
 package hw3;
 
 import java.sql.Connection;
@@ -68,6 +75,7 @@ public class ListManager {
 	
 	
 	
+	//get selected value and make query string
 	
 	public boolean generateGenreQuery(JList genre_list) {
 		List<String> genreSelected = genre_list.getSelectedValuesList();
@@ -100,7 +108,7 @@ public class ListManager {
 		return true;
 	}
 	
-	
+	//get origin selection and make query for origin
 	public boolean getOriginSelection(JList origin_list, Connection con) throws SQLException {
 		List<String> originSelected = origin_list.getSelectedValuesList();
 		if(originSelected.size() == 0) {
@@ -220,11 +228,8 @@ public class ListManager {
 	}
 
 	
-	public void resetNoUnselect()
-	{
-		
-	}
 
+// reset button
 	public void reset() {
 		bufOrigin = "";
 		bufFilm = "";

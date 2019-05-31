@@ -1,3 +1,10 @@
+/*
+ * Ryan Schulz
+ * COEN 280
+ * Project 3
+ * Due 5/31/2019
+ */
+
 package hw3;
 
 import java.sql.Connection;
@@ -31,7 +38,7 @@ public class QueryMaker {
 		averageMode = 0;
 		
 	}
-	
+	//takes in data from GUI and forms query
 	public void intakeData(JList origin_list, JList film_list, Connection con, double avg, int num, int fYear, int cYear, int tag, String tagCombo, String avgCombo, String numCombo) throws SQLException {
 		if(cYear < fYear) {
 			int temp = cYear;
@@ -56,7 +63,7 @@ public class QueryMaker {
 		
 		String numType = "AVG_NUM_RATINGS";
 		String avgType;
-		
+		//change between average modes
 		if(averageMode == 0) {
 			avgType = "AVG_TOP_CRITIC";
 			numType = "NUM_TOP_CRITIC";
@@ -86,7 +93,7 @@ public class QueryMaker {
 		System.out.println("\n" + nameQuery + "\n");
 		System.out.println(tagQuery + "\n");
 		
-		//name query
+		//exeute query for names
 		Statement stmt = con.createStatement(); 
 		ResultSet rs = stmt.executeQuery(nameQuery);
 		String resultName;
@@ -97,7 +104,7 @@ public class QueryMaker {
 		}
 		stmt.close();
 		
-		
+		//execute query for tags
 		Statement stmtTag = con.createStatement(); 
 		ResultSet rsTag = stmtTag.executeQuery(tagQuery);
 		String resultTag;
@@ -112,6 +119,7 @@ public class QueryMaker {
 			
 	}
 	
+	//generate query for origin selected
 	public String generateOriginQuery(JList origin_list) {
 		List<String> originSelected = origin_list.getSelectedValuesList();
 		if(originSelected.size() == 0) {
@@ -146,7 +154,7 @@ public class QueryMaker {
 	}
 	
 	
-	
+	//generate query for film selected
 	public String generateFilmQuery(JList film_list) {
 		List<String> filmSelected = film_list.getSelectedValuesList();
 		if(filmSelected.size() == 0) {
@@ -182,17 +190,19 @@ public class QueryMaker {
 	}
 	
  
+	
+
 	public void setAvgMode(int x) {
 		averageMode = x;
 	}
 	
-	
+	//reset button
 	public void reset() {
 		nameList.clear();
 		tagList.clear();
 	}
 	
-
+	//updates the right corner box with numbers
 	public void displayNames(DefaultListModel nameLM) {
 		int size = nameList.size();
 		gui.setJlabelName(size);

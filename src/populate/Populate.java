@@ -1,3 +1,10 @@
+/*
+ * Ryan Schulz
+ * COEN 280
+ * Project 3
+ * Due 5/31/2019
+ */
+
 package populate;
 
 import java.awt.event.ActionEvent;
@@ -19,7 +26,7 @@ import javax.swing.Timer;
 public class Populate{
 
 	public static void main(String[] args) {
-		
+		//dont run unless necessary as it takes a while!
 		System.out.print("Type 'Yes' to run on only necessary, 'All' to run on all tables, anything else to cancel\nWhat do you want to do: ");
 		Scanner sc = new Scanner(System.in);
 		String input = sc.next();
@@ -44,15 +51,15 @@ public class Populate{
 
 			long t = System.currentTimeMillis();
 
-			//delete option
+	
 			con = DBConnectionManager.openConnection();
 			System.out.println("Connection opened\n");
 
 			
 			
 			
-			IndexManager.removeIndex(con);
-			
+			IndexManager.removeIndex(con); //remove index
+			//DELETE FIRST
 			Statement stmt = con.createStatement();
 			System.out.println("Deleting all previous User Tagged Timestamp Data");
 			stmt.executeQuery("DELETE USER_TAGGED_TIMESTAMP");
@@ -81,17 +88,16 @@ public class Populate{
 			
 			
 			
-			
+			//required for GUI
 			InsertMovie.ReadInsert(con);
 			InsertGenres.ReadInsert(con);
 			InsertTagMap.ReadInsert(con);
 			InsertMovieTags.ReadInsert(con);
 			InsertOriginCountry.ReadInsert(con);
-			//InsertFilmCountry film = new InsertFilmCountry(con);
 			InsertFilmCountry.ReadInsert(con); //2 min 30 seconds up to here
 			
 			
-			
+			//these are not required for GUI
 			
 			if(insertMode == 1) {
 			printTime(t);
@@ -105,8 +111,7 @@ public class Populate{
            
             
             System.out.println("All files were successfully added to the database.\n");
-            IndexManager.createIndex(con);
-            
+            IndexManager.createIndex(con); //create index
             printTime(t);
        
             
@@ -125,7 +130,7 @@ public class Populate{
 		
 		
 	 }
-
+	//prints time for performance evaluation
 	public static void printTime(long t) {
 		long now = System.currentTimeMillis();
 		long sec = (now - t);

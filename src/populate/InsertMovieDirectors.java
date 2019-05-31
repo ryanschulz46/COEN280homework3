@@ -1,3 +1,10 @@
+/*
+ * Ryan Schulz
+ * COEN 280
+ * Project 3
+ * Due 5/31/2019
+ */
+
 package populate;
 
 import java.io.File;
@@ -54,7 +61,7 @@ public class InsertMovieDirectors {
 			return;
 		}
 		
-		
+		//escape ' for sql
 		String doubleapost = "''";
 		String doublequotes = "\"";
 		directName = directName.replaceAll(doubleapost, doublequotes); //remove any special values from sql

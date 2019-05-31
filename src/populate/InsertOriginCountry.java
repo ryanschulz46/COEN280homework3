@@ -1,3 +1,10 @@
+/*
+ * Ryan Schulz
+ * COEN 280
+ * Project 3
+ * Due 5/31/2019
+ */
+
 package populate;
 
 import java.io.File;
@@ -47,7 +54,7 @@ public class InsertOriginCountry {
 		movieId = sc.next();
 		try {
 			country = sc.next();
-			if(country.equals("")) {
+			if(country.equals("")) { //return if no movie name as its useless for query
 				System.out.println("Error: Movie ID " + movieId + "has no country name. Avoiding.");
 				sc.close();
 				return;
