@@ -9,6 +9,8 @@ package hw3;
 
 import java.awt.BorderLayout;
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.text.NumberFormatter;
 
 import populate.DBConnectionManager;
@@ -47,6 +49,7 @@ public class GUI {
 	private DefaultListModel filmListModel;
 	private DefaultListModel nameListModel;
 	private DefaultListModel tagListModel;
+	private DefaultListModel mDetailListModel;
 	private JList genre_list;
 	public JFrame contain;
 	private JPanel panel;
@@ -345,7 +348,7 @@ public class GUI {
 		///REVIEW AVG AND NUM PANEL
 		JPanel reviewPanel = new JPanel();
 		reviewPanel.setBackground(Color.LIGHT_GRAY);
-		reviewPanel.setBounds(858, 109, 555, 291);
+		reviewPanel.setBounds(858, 109, 555, 269);
 		panel.add(reviewPanel);
 		reviewPanel.setLayout(null);
 		
@@ -441,11 +444,209 @@ public class GUI {
 		
 		//QUERY RESULTS
 		JScrollPane movieScroll = new JScrollPane();
-		movieScroll.setBounds(21, 519, 495, 260);
+		movieScroll.setBounds(21, 519, 404, 260);
 		panel.add(movieScroll);
 		
 		nameListModel = new DefaultListModel();
 		JList name_list = new JList(nameListModel);
+		name_list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        name_list.addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent changedSelect) {
+				mDetailListModel.clear();
+				String selected = "";
+				try {
+				selected = name_list.getSelectedValue().toString();
+				} catch (Exception e) {
+					return;
+				};
+				// TODO Auto-generated method stub
+					String year="", avgTopCritic ="", numTopCritic="", avgRatingA="", avgRatingB="", avgNumRating="";
+					String movieId = ("SELECT M.MOVIE_ID, M.YEAR, M.AVG_TOP_CRITIC, M.NUM_TOP_CRITIC, M.AVG_RATING_A, "
+							+ "M.AVG_RATING_B, M.AVG_NUM_RATINGS"
+							+ " FROM MOVIE M WHERE NAME = '" + selected +"'");
+					Statement stmt = null;
+					try {
+						stmt = con.createStatement();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} 
+					ResultSet rs = null;
+					try {
+						rs = stmt.executeQuery(movieId);
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					try {
+						rs.next();
+						movieId = rs.getString("MOVIE_ID");
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					try {
+						year = rs.getString("YEAR");
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					try {
+						avgTopCritic = rs.getString("AVG_TOP_CRITIC");
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					try {
+						numTopCritic = rs.getString("NUM_TOP_CRITIC");
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					try {
+						avgRatingA = rs.getString("AVG_RATING_A");
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					try {
+						avgRatingB = rs.getString("AVG_RATING_B");
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					try {
+						avgNumRating = rs.getString("AVG_NUM_RATINGS");
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					try {
+						rs.close();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					
+
+					
+					String origin = ("SELECT O.COUNTRY FROM ORIGIN_COUNTRY O WHERE O.MOVIE_ID = " + movieId);
+					try {
+						rs = stmt.executeQuery(origin);
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					try {
+						rs.next();
+						origin = rs.getString("COUNTRY");
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					try {
+						rs.close();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					
+					
+					boolean first = true;
+					String film = ("SELECT DISTINCT F.COUNTRY FROM FILM_COUNTRY F WHERE F.MOVIE_ID = " + movieId);
+					try {
+						rs = stmt.executeQuery(film);
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					try {
+						film = "";
+						while(rs.next()) {
+							if(first) {
+								film = rs.getString("COUNTRY");
+								first = false;
+							}
+							else {
+								film = film + ", " + rs.getString("COUNTRY");
+							}
+						}
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					try {
+						rs.close();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+					first = true;
+					String genre = ("SELECT G.GENRE FROM GENRES G WHERE G.MOVIE_ID = " + movieId);
+					try {
+						rs = stmt.executeQuery(genre);
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					try {
+						while(rs.next()) {
+							if(first) {
+								genre = rs.getString("GENRE");
+								first = false;
+							}
+							else {
+								genre = genre + ", " + rs.getString("GENRE");
+							}
+						}
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					try {
+						rs.close();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					int averageMode = queryM.getAvgMode();
+					
+					String numType = avgNumRating;
+					String avgType;
+					//change between average modes
+					if(averageMode == 0) {
+						avgType = avgTopCritic;
+						numType = numTopCritic;
+					}
+					else if(averageMode == 1) {
+						avgType = avgRatingA;
+					}
+					else {
+						avgType = avgRatingB;
+					}
+					
+			/*	String movieDetail = "Movie Name: " + selected + "Movie ID: " + movieId + "\nGenre: " + genre
+							+ "\nYear: " + year + "\n Origin Country: " + origin + "\nFilm Countries: " + film
+							+ "\nAverage Rating: " + avgType + "\nAverage Number Ratings: " + numType;
+				*/	
+					mDetailListModel.addElement("Movie Name: " + selected);
+					mDetailListModel.addElement("Movie ID: " + movieId);
+					mDetailListModel.addElement("Genre: " + genre);
+					mDetailListModel.addElement("Year: " + year);
+					mDetailListModel.addElement("Production Country: " + origin);
+					mDetailListModel.addElement("Film Countries: " + film);
+					mDetailListModel.addElement("Average Rating: " + avgType);
+					mDetailListModel.addElement("Average Number Ratings: " + numType);
+					
+				}
+				
+			}
+        );
 		movieScroll.setViewportView(name_list);
 		
 		JLabel lblMovieNames = new JLabel("Movie Names");
@@ -454,7 +655,7 @@ public class GUI {
 		movieScroll.setColumnHeaderView(lblMovieNames);
 		
 		JScrollPane tagScroll = new JScrollPane();
-		tagScroll.setBounds(583, 519, 495, 260);
+		tagScroll.setBounds(1027, 519, 374, 260);
 		panel.add(tagScroll);
 		
 		JLabel lblTagNames = new JLabel("Tag Names");
@@ -477,7 +678,7 @@ public class GUI {
 
 		//QUERY
 		btnQuery = new JButton("QUERY");
-		btnQuery.setBounds(893, 421, 448, 71);
+		btnQuery.setBounds(882, 411, 252, 71);
 		btnQuery.addActionListener(new ActionListener() {
 			public void btnQuery(ActionEvent arg0) {
 			}
@@ -578,7 +779,7 @@ public class GUI {
 		panel.add(btnQuery);
 		
 		counterPanel = new JPanel();
-		counterPanel.setBounds(1156, 542, 195, 169);
+		counterPanel.setBounds(1155, 387, 252, 104);
 		panel.add(counterPanel);
 		counterPanel.setLayout(null);
 		
@@ -587,12 +788,26 @@ public class GUI {
 		counterPanel.add(lblNumMovie);
 		
 		lblNumTag = new JLabel("Numer of tags: 0");
-		lblNumTag.setBounds(25, 63, 140, 26);
+		lblNumTag.setBounds(15, 38, 140, 26);
 		counterPanel.add(lblNumTag);
 		
 		lblStatus = new JLabel("Pre-query");
-		lblStatus.setBounds(47, 122, 92, 26);
+		lblStatus.setBounds(15, 70, 92, 26);
 		counterPanel.add(lblStatus);
+		
+		JScrollPane mDetailScroll = new JScrollPane();
+		mDetailScroll.setBounds(463, 519, 525, 260);
+		panel.add(mDetailScroll);
+		
+		
+		mDetailListModel = new DefaultListModel();
+		JList mDetailList = new JList(mDetailListModel);
+		mDetailScroll.setViewportView(mDetailList);
+		
+		JLabel lblmDetail = new JLabel("Selected Movie Detail");
+		lblmDetail.setHorizontalAlignment(SwingConstants.CENTER);
+		lblmDetail.setForeground(Color.RED);
+		mDetailScroll.setColumnHeaderView(lblmDetail);
 		
 		
 

@@ -85,12 +85,37 @@ public class QueryMaker {
 				+ avgCombo + avg + " AND M1." + numType  +" "+ numCombo + num + ") review, " + origin + film + listM.getGenreQuery() 
 				+ "WHERE review.ID = year.ID AND review.ID = gen.ID" + originFilmWhere;
 		
-		String tagQuery = "SELECT DISTINCT TM.TAG_NAME AS TAG FROM (SELECT T.TAG_ID AS TID FROM( " + query + ") name, TAG_MOVIE_PAIR T"
-				+ " WHERE T.MOVIE_ID = name.ID) tagID, Tag_Map TM WHERE TM.TAG_ID = tagID.TID";
-				
+		
+		
+		
+		String tagQuery = 
+				"SELECT DISTINCT TM.TAG_NAME AS TAG "
+				+"FROM ("
+					+"SELECT tagID.ID AS ID "
+					+"FROM ("
+							+"SELECT T.TAG_ID AS ID, T.WEIGHT AS WEIGHT "
+					
+							+"FROM("
+									 + query + //loads movieID from name query
+								") name, "
+									 
+							+"TAG_MOVIE_PAIR T " 
+								
+							+ "WHERE T.MOVIE_ID = name.ID"
+						+ ") tagID "
+						
+					+ "WHERE tagID.WEIGHT" + tagCombo + tag + ") nameless, TAG_MAP TM "
+				+"WHERE TM.TAG_ID = nameless.ID";
+			
+		
+		
+		
+		
+		
 				
 		
 		System.out.println("\n" + nameQuery + "\n");
+		System.out.println(query + "\n");
 		System.out.println(tagQuery + "\n");
 		
 		//exeute query for names
@@ -194,6 +219,10 @@ public class QueryMaker {
 
 	public void setAvgMode(int x) {
 		averageMode = x;
+	}
+	
+	public int getAvgMode() {
+		return averageMode;
 	}
 	
 	//reset button
