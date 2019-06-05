@@ -1,3 +1,10 @@
+/*
+ * Ryan Schulz
+ * COEN 280
+ * Project 3
+ * Due 5/31/2019
+ */
+
 package populate;
 
 import java.sql.Connection;
@@ -20,12 +27,6 @@ public class DBConnectionManager {
 		// Load the Oracle database driver 
            DriverManager.registerDriver(new oracle.jdbc.OracleDriver()); 
     
-           /* 
-           Here is the information needed when connecting to a database 
-           server. These values are now hard-coded in the program. In 
-           general, they should be stored in some configuration file and 
-           read at run time. 
-           //*/
            String host = "localhost"; 
            String port = "1521"; 
            String dbName = "orcl"; 
